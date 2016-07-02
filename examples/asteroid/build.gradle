@@ -1,0 +1,45 @@
+plugins {
+    id 'com.stehno.natives' version '0.2.4'
+}
+
+group 'com.wafflesoft'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+}
+
+tasks.withType(Test) {
+    systemProperty 'java.library.path', file( 'build/natives/linux' )
+}
+
+natives {
+    jars = [
+            'lwjgl-platform-2.9.3-natives-windows',
+            'lwjgl-platform-2.9.3-natives-osx',
+            'lwjgl-platform-2.9.3-natives-linux'
+    ]
+}
+
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Ents-Asteroids',
+                'Implementation-Version': version,
+                'Main-Class': 'asteroids.j2d.java2DAsteroids'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+dependencies {
+    compile project(":ents-core")
+    compile group: 'org.lwjgl.lwjgl', name: 'lwjgl', version: '2.9.3'
+    compile group: 'org.lwjgl.lwjgl', name: 'lwjgl_util', version: '2.9.3'
+    compile group: 'org.lwjgl.lwjgl', name: 'lwjgl-platform', version: '2.9.3', ext: 'pom'
+}

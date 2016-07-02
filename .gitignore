@@ -6,3 +6,8 @@ doc/
 *.o
 *.gch
 *.sublime-workspace
+.idea
+*.iml
+build/
+examples/asteroid/build
+examples/particles/build

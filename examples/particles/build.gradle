@@ -1,0 +1,26 @@
+group 'com.wafflesoft'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.6
+
+repositories {
+    mavenCentral()
+}
+
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Ents-Asteroids',
+                'Implementation-Version': version,
+                'Main-Class': 'asteroids.j2d.java2DAsteroids'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+dependencies {
+    compile project(":ents-core")
+}
